@@ -8,6 +8,9 @@ import { TokenPayload } from './token-payload.interface';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 
+const getErrorMessage = (error: unknown): string =>
+  error instanceof Error ? error.message : 'Unknown error';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -49,7 +52,7 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException(
         'Credentials are not valid. ',
-        error.message,
+        getErrorMessage(error),
       );
     }
   }

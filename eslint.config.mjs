@@ -49,4 +49,11 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    files: ['src/**/*.spec.ts', 'test/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+    },
+  },
 );

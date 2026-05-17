@@ -30,6 +30,8 @@ $ npm run start:dev
 
 # connect stripe checkout endpoint
 $ stripe listen --forward-to http://localhost:3001/checkout/webhook
+or simply run the command
+$ npm run stripe
 ```
 
 ## Running the app in more detail
@@ -40,6 +42,8 @@ After installing the dependencies with `npm install` and starting the app with `
 
 Then open a new terminal and type the following command:
 `stripe listen --forward-to http://localhost:3001/checkout/webhook`
+or run the script `npm run stripe`
+
 
 This will open a stripe webhook endpoint to listen for events coming from the Stripe checkout session:
 

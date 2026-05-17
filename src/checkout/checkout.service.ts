@@ -1,17 +1,23 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import Stripe from 'stripe';
 import { PaintingsService } from '../paintings/paintings.service';
 import { ConfigService } from '@nestjs/config';
 
+type StripeClient = InstanceType<typeof Stripe>;
+export type CheckoutSession = Awaited<
+  ReturnType<StripeClient['checkout']['sessions']['create']>
+>;
+
 @Injectable()
 export class CheckoutService {
   constructor(
-    private readonly stripe: Stripe,
+    @Inject(Stripe)
+    private readonly stripe: StripeClient,
     private readonly paintingsService: PaintingsService,
     private readonly configService: ConfigService,
   ) {}
 
-  async createSession(paintingId: string) {
+  async createSession(paintingId: string): Promise<CheckoutSession> {
     const painting = await this.paintingsService.getPainting(paintingId);
     return this.stripe.checkout.sessions.create({
       metadata: {
@@ -35,7 +41,10 @@ export class CheckoutService {
     });
   }
 
-  async handleCheckoutWebhook(rawBody: Buffer, signature?: string) {
+  async handleCheckoutWebhook(
+    rawBody: Buffer,
+    signature?: string,
+  ): Promise<void> {
     if (!signature) {
       throw new BadRequestException('Missing Stripe signature');
     }
