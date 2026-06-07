@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import {
-  WebSocketGateway,
-  WebSocketServer,
-  WsException,
-} from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
+
+interface SocketAuthentication {
+  value?: unknown;
+}
 
 @WebSocketGateway({
   cors: {
@@ -24,11 +23,18 @@ export class PaintingsGateway {
 
   handleConnection(client: Socket) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      this.authService.verifyToken(client.handshake.auth.Authentication.value);
+      const authentication = client.handshake.auth
+        .Authentication as SocketAuthentication;
+
+      if (typeof authentication?.value !== 'string') {
+        client.disconnect();
+        return;
+      }
+
+      this.authService.verifyToken(authentication.value);
     } catch (error) {
       console.error('Unauthorized connection attempt', error);
-      throw new WsException('Unauthorized');
+      client.disconnect();
     }
   }
 }

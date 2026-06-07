@@ -146,7 +146,6 @@ export class PaintingsController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   async getPaintings(@Query('status') status: string) {
     return this.paintingsService.getPaintings(status);
   }
@@ -158,7 +157,6 @@ export class PaintingsController {
   }
 
   @Get(':paintingId')
-  @UseGuards(JwtAuthGuard)
   async getPainting(@Param('paintingId') paintingId: string) {
     return await this.paintingsService.getPainting(paintingId);
   }

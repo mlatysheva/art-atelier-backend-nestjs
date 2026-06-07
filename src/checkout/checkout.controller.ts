@@ -1,5 +1,4 @@
-import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Body, Controller, Headers, Post } from '@nestjs/common';
 import { CreateSessionRequest } from './dto/create-session.request';
 import { CheckoutService, CheckoutSession } from './checkout.service';
 
@@ -8,7 +7,6 @@ export class CheckoutController {
   constructor(private readonly checkoutService: CheckoutService) {}
 
   @Post('session')
-  @UseGuards(JwtAuthGuard)
   async createSession(
     @Body() request: CreateSessionRequest,
   ): Promise<CheckoutSession> {
