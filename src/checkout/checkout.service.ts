@@ -17,11 +17,15 @@ export class CheckoutService {
     private readonly configService: ConfigService,
   ) {}
 
-  async createSession(paintingId: string): Promise<CheckoutSession> {
+  async createSession(
+    paintingId: string,
+    userId: string,
+  ): Promise<CheckoutSession> {
     const painting = await this.paintingsService.getPainting(paintingId);
     return this.stripe.checkout.sessions.create({
       metadata: {
         paintingId: painting.id,
+        userId,
       },
       line_items: [
         {

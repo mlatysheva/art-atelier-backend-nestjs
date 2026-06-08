@@ -8,7 +8,7 @@ It provides the following backend functionality for the frontend `Maria's Atelie
 - Protected CRUD functionality for creating, editing and deleting paintings
 - Cookie-based authentication using `passport` library
 - Password protection using `bcrypt` library
-- Public integration with `Stripe` checkout so visitors can buy without creating an account
+- Protected integration with `Stripe` checkout so only authenticated users can buy
 - Websocket connection based on `socket.io` library to update available paintings in real time after a successful Stripe purchase
 - `Postgres` database to maintain users and paintings
 - `Prisma ORM` to build and maintain Postgres database schemas 
@@ -20,7 +20,6 @@ The public storefront does not require authentication:
 
 - `GET /paintings?status=available` returns paintings available for sale
 - `GET /paintings/:paintingId` returns a painting detail page payload
-- `POST /checkout/session` creates a Stripe checkout session
 
 Management endpoints remain protected by cookie-based JWT authentication:
 
@@ -28,6 +27,7 @@ Management endpoints remain protected by cookie-based JWT authentication:
 - `PATCH /paintings/:paintingId`
 - `DELETE /paintings/:paintingId`
 - `GET /paintings/admin`
+- `POST /checkout/session`
 - painting image upload/update endpoints
 
 Unauthenticated websocket connections are disconnected cleanly. Authenticated clients receive painting update events.
@@ -90,7 +90,7 @@ Post request to Stripe events webhook:
 
 ![Stripe checkout webhook](screenshots/stripe_checkout_session.png)
 
-Post request to `/checkout/session` creates a Stripe checkout session for an available painting and does not require authentication.
+Post request to `/checkout/session` creates a Stripe checkout session for an available painting and requires authentication.
 
 The `paintings` table in PG Admin:
 
