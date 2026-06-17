@@ -25,6 +25,7 @@ import { extname } from 'node:path';
 import * as fs from 'fs';
 import * as path from 'path';
 import { UpdatePaintingRequest } from './dto/update-painting.request';
+import { PaintingOwnerGuard } from './guards/painting-owner.guard';
 
 @Controller('paintings')
 export class PaintingsController {
@@ -40,7 +41,7 @@ export class PaintingsController {
   }
 
   @Post(':paintingId/images')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PaintingOwnerGuard)
   @UseInterceptors(
     FilesInterceptor('image', 10, {
       storage: diskStorage({
@@ -95,7 +96,7 @@ export class PaintingsController {
    * @returns
    */
   @Patch(':paintingId/images')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PaintingOwnerGuard)
   @UseInterceptors(
     FilesInterceptor('image', 10, {
       storage: diskStorage({
